@@ -1,0 +1,78 @@
+<html>
+<head>
+	<meta charset="utf-8">
+<title>PoC Uploader</title>
+<link rel="stylesheet" type="text/css" href="style.css">
+	</head>
+	<body>
+
+
+        <div class="frame">
+            <div class="center" id="center">
+                <div class="title">
+                    <h1>Drop file to upload.</h1>
+                </div>
+                <div class="dropzone" id="dropzone">
+                    <img src="https://100dayscss.com/codepen/upload.svg" class="upload-icon" />
+                </div>
+                <br>
+            </div>
+        </div>
+        
+
+
+<script type="text/javascript">
+	
+	( function () {
+
+		var center = document.getElementById('center') ; 
+		var droparea = document.getElementById('dropzone') ; 
+        var listFile = function(response){
+            var html = `<div class="title">
+                    <h1>Your Files</h1>
+                </div>`;
+
+        response.forEach(element => {
+        html += `<a href='${element.file}'>${element.name}</a>`;
+        });
+        center.innerHTML = html; 
+        }
+        var up = function(files){
+        var formData = new FormData(),
+        xhr = new XMLHttpRequest(), 
+         f ; 
+
+         for (f = 0; f < files.length ; f++ ) {
+         	formData.append('file[]',files[f]);
+          
+         }
+         xhr.onload= function(){
+           response = JSON.parse(this.responseText); 
+           console.log(response);
+           listFile(response);
+         }
+
+         xhr.open('post' , 'upload.php');
+         xhr.send(formData);
+
+        }
+        droparea.ondrop = function(ev){
+         ev.preventDefault(); 
+         this.className= 'droparea';
+        up(ev.dataTransfer.files);
+        };
+
+		droparea.ondragover = function(){
+        this.className= 'droparea dragover';
+        return false ;
+		};
+        droparea.ondragleave = function(){
+        this.className= 'droparea';
+        return false ;
+		};
+ 
+	}());
+
+</script>
+	</body>
+</html>
